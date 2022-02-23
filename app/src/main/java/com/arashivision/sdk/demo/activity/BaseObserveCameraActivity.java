@@ -37,9 +37,10 @@ public abstract class BaseObserveCameraActivity extends AppCompatActivity implem
      * A common situation is that other phones or other applications of this phone have already
      * established a connection with this camera, resulting in this establishment failure,
      * and other phones need to disconnect from this camera first.
+     * @param errorCode
      */
     @Override
-    public void onCameraConnectError() {
+    public void onCameraConnectError(int errorCode) {
     }
 
     /**

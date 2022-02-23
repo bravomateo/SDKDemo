@@ -36,7 +36,7 @@
     <string name="main_fw_upgrade_desc">Upload the firmware upgrade package (.bin file) to the camera for upgrade</string>
     <string name="main_toast_camera_connected">Camera connected</string>
     <string name="main_toast_camera_disconnected">Camera disconnected</string>
-    <string name="main_toast_camera_connect_error">Camera connect failed</string>
+    <string name="main_toast_camera_connect_error">Camera connect failed %d</string>
     <string name="main_toast_sd_enabled">SD card is enabled</string>
     <string name="main_toast_sd_disabled">SD card may be some error</string>
 

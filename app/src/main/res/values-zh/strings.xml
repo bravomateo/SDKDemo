@@ -36,7 +36,7 @@
     <string name="main_fw_upgrade_desc">上传固件升级包(.bin文件)到相机进行升级</string>
     <string name="main_toast_camera_connected">相机已连接</string>
     <string name="main_toast_camera_disconnected">相机连接断开</string>
-    <string name="main_toast_camera_connect_error">相机连接失败</string>
+    <string name="main_toast_camera_connect_error">相机连接失败 %d</string>
     <string name="main_toast_sd_enabled">SD卡可用</string>
     <string name="main_toast_sd_disabled">SD卡异常</string>
 

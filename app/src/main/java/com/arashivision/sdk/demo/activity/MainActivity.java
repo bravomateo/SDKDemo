@@ -134,9 +134,10 @@ public class MainActivity extends BaseObserveCameraActivity {
     }
 
     @Override
-    public void onCameraConnectError() {
-        super.onCameraConnectError();
-        Toast.makeText(this, R.string.main_toast_camera_connect_error, Toast.LENGTH_SHORT).show();
+    public void onCameraConnectError(int errorCode) {
+        super.onCameraConnectError(errorCode);
+        CameraBindNetworkManager.getInstance().unbindNetwork();
+        Toast.makeText(this, getResources().getString(R.string.main_toast_camera_connect_error, errorCode), Toast.LENGTH_SHORT).show();
     }
 
     @Override

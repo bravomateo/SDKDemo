@@ -228,7 +228,7 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
     }
 
     @Override
-    public void onCameraConnectError() {
+    public void onCameraConnectError(int errorCode) {
         mLayoutLoading.setVisibility(View.GONE);
         mLayoutPlayer.setVisibility(View.GONE);
         mLayoutPromptConnectCamera.setVisibility(View.VISIBLE);
