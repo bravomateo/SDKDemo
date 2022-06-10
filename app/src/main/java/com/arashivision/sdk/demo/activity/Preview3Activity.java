@@ -114,6 +114,8 @@ public class Preview3Activity extends BaseObserveCameraActivity implements IPrev
                 .setCameraType(InstaCameraManager.getInstance().getCameraType())
                 .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
                 .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
+                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
+                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
                 .setCameraRenderSurfaceInfo(mImageReader.getSurface(), mImageReader.getWidth(), mImageReader.getHeight());
         return builder;
     }

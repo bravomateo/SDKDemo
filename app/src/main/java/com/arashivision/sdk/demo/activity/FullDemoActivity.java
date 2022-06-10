@@ -312,6 +312,8 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
                 .setCameraType(InstaCameraManager.getInstance().getCameraType())
                 .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
                 .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
+                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
+                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
                 .setLive(mCurPreviewType == InstaCameraManager.PREVIEW_TYPE_LIVE)  // 是否为直播模式
                 .setResolutionParams(mCurPreviewResolution.width, mCurPreviewResolution.height, mCurPreviewResolution.fps);
     }

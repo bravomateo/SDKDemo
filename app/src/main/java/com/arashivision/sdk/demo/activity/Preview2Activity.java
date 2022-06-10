@@ -110,6 +110,8 @@ public class Preview2Activity extends BaseObserveCameraActivity implements IPrev
                 .setCameraType(InstaCameraManager.getInstance().getCameraType())
                 .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
                 .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
+                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
+                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
                 .setCameraRenderSurfaceInfo(mSurfaceView.getHolder().getSurface(), mSurfaceView.getWidth(), mSurfaceView.getHeight());
         return builder;
     }

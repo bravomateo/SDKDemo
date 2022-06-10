@@ -221,6 +221,8 @@ public class PreviewActivity extends BaseObserveCameraActivity implements IPrevi
                 .setCameraType(InstaCameraManager.getInstance().getCameraType())
                 .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
                 .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
+                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
+                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
                 .setStabType(getStabType())
                 .setStabEnabled(mSpinnerStabType.getSelectedItemPosition() != 4);
         if (mCurrentResolution != null) {
