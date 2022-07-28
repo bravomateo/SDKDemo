@@ -128,6 +128,22 @@
         android:textOff="@string/play_hdr_stitch"
         android:textOn="@string/play_original"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_pure_shot_stitch"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/btn_pure_shot_stitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:alpha="0.8"
+        android:textAllCaps="false"
+        android:textOff="@string/play_pure_shot_stitch"
+        android:textOn="@string/play_original"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_hdr_stitch"
+        app:layout_goneMarginStart="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

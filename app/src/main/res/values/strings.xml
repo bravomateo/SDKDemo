@@ -76,6 +76,7 @@
     <string name="capture_switch_sensor_failed">Switch failed</string>
     <string name="capture_switch_sensor_camera_connect_error">Camera is not connected</string>
     <string name="capture_normal_capture">Normal Capture</string>
+    <string name="capture_normal_capture_pure_shot">Normal Capture (PureShot)</string>
     <string name="capture_normal_pano_capture">Insta Pano Mode Normal Capture</string>
     <string name="capture_hdr_capture">HDR Capture</string>
     <string name="capture_hdr_pano_capture">Insta Pano Mode HDR Capture</string>
@@ -244,10 +245,12 @@
     <string name="play_export_original">Export\nPanorama</string>
     <string name="play_export_thumbnail">Export\nThumbnail</string>
     <string name="play_hdr_stitch">HDR Stitch</string>
+    <string name="play_pure_shot_stitch">PureShot Stitch</string>
     <string name="play_original">Original</string>
     <string name="play_toast_empty_path">Empty path</string>
     <string name="play_toast_download_first">Please download file to local first</string>
     <string name="play_toast_not_hdr">This is not HDR photo</string>
+    <string name="play_toast_not_pure_shot">This is not PureShot photo</string>
     <string name="play_toast_load_finish">Load finish</string>
     <string name="play_toast_fail_desc">onFail(%d)  %s</string>
     <string name="export_dialog_msg_exporting">Exporting...</string>
@@ -257,6 +260,9 @@
     <string name="export_dialog_msg_export_progress">Export progress： %s</string>
     <string name="export_dialog_msg_stitching">Stitching...</string>
     <string name="export_dialog_msg_hdr_stitching">HDR Stitching...</string>
+    <string name="export_dialog_msg_hdr_stitch_error">HDR Failed</string>
+    <string name="export_dialog_msg_pure_shot_stitching">PureShot Stitching...</string>
+    <string name="export_dialog_msg_pure_shot_stitch_error">PureShot Failed  %d</string>
     <string name="export_dialog_stop">Stop</string>
     <string name="export_dialog_ok">OK</string>
 

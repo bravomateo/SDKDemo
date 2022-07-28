@@ -26,9 +26,14 @@ public class MyApp extends Application {
     }
 
     private void copyHdrSourceFromAssets() {
-        File dir = new File(StitchActivity.COPY_DIR);
-        if (!dir.exists()) {
-            AssetsUtil.copyFilesFromAssets(this, "hdr_source", dir.getAbsolutePath());
+        File dirHdr = new File(StitchActivity.HDR_COPY_DIR);
+        if (!dirHdr.exists()) {
+            AssetsUtil.copyFilesFromAssets(this, "hdr_source", dirHdr.getAbsolutePath());
+        }
+
+        File dirPureShot = new File(StitchActivity.PURE_SHOT_COPY_DIR);
+        if (!dirPureShot.exists()) {
+            AssetsUtil.copyFilesFromAssets(this, "pure_shot_source", dirPureShot.getAbsolutePath());
         }
     }
 

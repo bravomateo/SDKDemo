@@ -80,11 +80,10 @@ public class MainActivity extends BaseObserveCameraActivity {
         });
 
         findViewById(R.id.btn_play).setOnClickListener(v -> {
-            PlayAndExportActivity.launchActivity(this, new String[]{
-                    StitchActivity.COPY_DIR + "/img1.jpg",
-                    StitchActivity.COPY_DIR + "/img2.jpg",
-                    StitchActivity.COPY_DIR + "/img3.jpg"
-            });
+            // HDR
+//            PlayAndExportActivity.launchActivity(this, StitchActivity.HDR_URLS);
+            // PureShot
+            PlayAndExportActivity.launchActivity(this, StitchActivity.PURE_SHOT_URLS);
         });
 
         findViewById(R.id.btn_stitch).setOnClickListener(v -> {

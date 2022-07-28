@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,11 +22,14 @@ import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Response;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.Nullable;
 
 public class CaptureActivity extends BaseObserveCameraActivity implements ICaptureStatusListener {
+
+    private final String TAG = "CaptureActivity";
 
     private TextView mTvCaptureStatus;
     private TextView mTvCaptureTime;
@@ -62,7 +66,16 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
 
         findViewById(R.id.btn_normal_capture).setOnClickListener(v -> {
             if (checkSdCardEnabled()) {
+                int funcMode = InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL;
+                InstaCameraManager.getInstance().setRawToCamera(funcMode, false);
                 InstaCameraManager.getInstance().startNormalCapture(false);
+            }
+        });
+        findViewById(R.id.btn_normal_capture_pure_shot).setOnClickListener(v -> {
+            if (checkSdCardEnabled()) {
+                int funcMode = InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL;
+                InstaCameraManager.getInstance().setRawToCamera(funcMode, true);
+                InstaCameraManager.getInstance().startNormalCapture(true);
             }
         });
 
@@ -205,6 +218,7 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
 
     @Override
     public void onCaptureFinish(String[] filePaths) {
+        Log.i(TAG, "onCaptureFinish, filePaths = " + ((filePaths == null) ? "null" : Arrays.toString(filePaths)));
         mTvCaptureStatus.setText(R.string.capture_capture_finished);
         mTvCaptureTime.setVisibility(View.GONE);
         mTvCaptureCount.setVisibility(View.GONE);

@@ -154,7 +154,7 @@ public class CameraFilesActivity extends BaseObserveCameraActivity {
             holder.itemView.setOnClickListener(v -> {
                 // 打开播放页
                 // Enter play page
-                PlayAndExportActivity.launchActivity(CameraFilesActivity.this, workWrapper.getUrls());
+                PlayAndExportActivity.launchActivity(CameraFilesActivity.this, workWrapper.getUrls(true));
             });
             holder.itemView.setOnLongClickListener(v -> {
                 mDialog.show();

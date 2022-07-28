@@ -48,13 +48,28 @@
                 android:textAllCaps="false" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_normal_capture"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:text="@string/capture_normal_capture"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_normal_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/capture_normal_capture"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_normal_capture_pure_shot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/capture_normal_capture_pure_shot"
+                android:textAllCaps="false" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_normal_pano_capture"

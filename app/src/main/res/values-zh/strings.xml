@@ -76,6 +76,7 @@
     <string name="capture_switch_sensor_failed">切换失败</string>
     <string name="capture_switch_sensor_camera_connect_error">相机未连接</string>
     <string name="capture_normal_capture">普通拍照</string>
+    <string name="capture_normal_capture_pure_shot">普通拍照 (PureShot)</string>
     <string name="capture_normal_pano_capture">Insta Pano模式 普通拍照</string>
     <string name="capture_hdr_capture">HDR拍照</string>
     <string name="capture_hdr_pano_capture">Insta Pano模式 HDR拍照</string>
@@ -244,10 +245,12 @@
     <string name="play_export_original">导出全景</string>
     <string name="play_export_thumbnail">导出缩略图</string>
     <string name="play_hdr_stitch">HDR合成</string>
+    <string name="play_pure_shot_stitch">PureShot合成</string>
     <string name="play_original">显示原图</string>
     <string name="play_toast_empty_path">文件路径为空</string>
     <string name="play_toast_download_first">请先从相机下载文件到本地</string>
     <string name="play_toast_not_hdr">不是HDR图片，无法合成</string>
+    <string name="play_toast_not_pure_shot">不是PureShot图片，无法合成</string>
     <string name="play_toast_load_finish">加载完成</string>
     <string name="play_toast_fail_desc">失败(%d)  %s</string>
     <string name="export_dialog_msg_exporting">正在导出中...</string>
@@ -257,6 +260,9 @@
     <string name="export_dialog_msg_export_progress">导出进度： %s</string>
     <string name="export_dialog_msg_stitching">正在拼接...</string>
     <string name="export_dialog_msg_hdr_stitching">正在合成HDR...</string>
+    <string name="export_dialog_msg_hdr_stitch_error">HDR合成失败</string>
+    <string name="export_dialog_msg_pure_shot_stitching">正在合成PureShot...</string>
+    <string name="export_dialog_msg_pure_shot_stitch_error">PureShot合成失败  %d</string>
     <string name="export_dialog_stop">停止</string>
     <string name="export_dialog_ok">OK</string>
 

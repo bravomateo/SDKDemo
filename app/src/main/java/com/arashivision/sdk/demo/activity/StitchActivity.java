@@ -19,13 +19,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class StitchActivity extends AppCompatActivity {
 
-    public static final String COPY_DIR = MyApp.getInstance().getCacheDir() + "/hdr_source";
-    private static final String[] URLS = new String[]{
-            COPY_DIR + "/img1.jpg",
-            COPY_DIR + "/img2.jpg",
-            COPY_DIR + "/img3.jpg"
+    public static final String HDR_COPY_DIR = MyApp.getInstance().getCacheDir() + "/hdr_source";
+    public static final String[] HDR_URLS = new String[]{
+            HDR_COPY_DIR + "/img1.jpg",
+            HDR_COPY_DIR + "/img2.jpg",
+            HDR_COPY_DIR + "/img3.jpg"
     };
-    private WorkWrapper mWorkWrapper = new WorkWrapper(URLS);
+
+    public static final String PURE_SHOT_COPY_DIR = MyApp.getInstance().getCacheDir() + "/pure_shot_source";
+    public static final String[] PURE_SHOT_URLS = new String[]{
+            PURE_SHOT_COPY_DIR + "/pureshot.insp",
+            PURE_SHOT_COPY_DIR + "/pureshot.dng"
+    };
+
+    private WorkWrapper mWorkWrapper = new WorkWrapper(HDR_URLS);
     private String mOutputPath = MyApp.getInstance().getFilesDir() + "/hdr_generate/generate.jpg";
     private StitchTask mStitchTask;
 

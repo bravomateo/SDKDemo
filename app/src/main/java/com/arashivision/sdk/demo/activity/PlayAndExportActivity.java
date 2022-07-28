@@ -54,15 +54,23 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
     private TextView mTvTotal;
     private SeekBar mSeekBar;
     private ToggleButton mBtnHDR;
+    private ToggleButton mBtnPureShot;
 
     private WorkWrapper mWorkWrapper;
     private MaterialDialog mExportDialog;
     private int mCurrentExportId = -1;
 
-    // HDR拼接
-    private StitchTask mStitchTask;
+    // HDR合成
+    private HDRStitchTask mHDRStitchTask;
     private String mHDROutputPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/SDK_DEMO_OSC/generate_hdr_" + System.currentTimeMillis() + ".jpg";
     private boolean mIsStitchHDRSuccessful;
+
+    // PureShot合成
+    private PureShotStitchTask mPureShotStitchTask;
+    private String mPureShotAlgoAssetFolderPath = "pure_shot_algo";
+    //    private String mPureShotAlgoLocalFolderPath = getExternalFilesDir(null).getAbsolutePath();
+    private String mPureShotOutputPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/SDK_DEMO_OSC/generate_pure_shot_" + System.currentTimeMillis() + ".jpg";
+    private boolean mIsStitchPureShotSuccessful;
 
     public static void launchActivity(Context context, String[] urls) {
         Intent intent = new Intent(context, PlayAndExportActivity.class);
@@ -97,8 +105,9 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
         mBtnHDR.setOnClickListener(v -> {
             if (mWorkWrapper.isHDRPhoto()) {
                 if (mBtnHDR.isChecked()) {
-                    mStitchTask = new StitchTask(this);
-                    mStitchTask.execute();
+                    mBtnPureShot.setChecked(false);
+                    mHDRStitchTask = new HDRStitchTask(this);
+                    mHDRStitchTask.execute();
                 } else {
                     mIsStitchHDRSuccessful = false;
                     playImage(mRbPlane.isChecked());
@@ -106,6 +115,25 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
             } else {
                 Toast.makeText(this, R.string.play_toast_not_hdr, Toast.LENGTH_SHORT).show();
                 mBtnHDR.setChecked(false);
+            }
+        });
+
+        // PureShot stitch
+        mBtnPureShot = findViewById(R.id.btn_pure_shot_stitch);
+        mBtnPureShot.setVisibility(mWorkWrapper.supportPureShot() ? View.VISIBLE : View.GONE);
+        mBtnPureShot.setOnClickListener(v -> {
+            if (mWorkWrapper.supportPureShot()) {
+                if (mBtnPureShot.isChecked()) {
+                    mBtnHDR.setChecked(false);
+                    mPureShotStitchTask = new PureShotStitchTask(this);
+                    mPureShotStitchTask.execute();
+                } else {
+                    mIsStitchPureShotSuccessful = false;
+                    playImage(mRbPlane.isChecked());
+                }
+            } else {
+                Toast.makeText(this, R.string.play_toast_not_pure_shot, Toast.LENGTH_SHORT).show();
+                mBtnPureShot.setChecked(false);
             }
         });
 
@@ -287,8 +315,10 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
             builder.setRenderModelType(ImageParamsBuilder.RENDER_MODE_PLANE_STITCH);
             builder.setScreenRatio(2, 1);
         }
-        if (mIsStitchHDRSuccessful) {
+        if (mIsStitchHDRSuccessful && mBtnHDR.isChecked()) {
             builder.setUrlForPlay(mHDROutputPath);
+        } else if (mIsStitchPureShotSuccessful && mBtnPureShot.isChecked()) {
+            builder.setUrlForPlay(mPureShotOutputPath);
         }
         mImagePlayerView.prepare(mWorkWrapper, builder);
         mImagePlayerView.play();
@@ -316,8 +346,10 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
                 .setExportMode(ExportUtils.ExportMode.PANORAMA)
                 .setImageFusion(mWorkWrapper.isPanoramaFile())
                 .setTargetPath(EXPORT_DIR_PATH + System.currentTimeMillis() + ".jpg");
-        if (mBtnHDR.isChecked()) {
+        if (mIsStitchHDRSuccessful && mBtnHDR.isChecked()) {
             builder.setUrlForExport(mHDROutputPath);
+        } else if (mIsStitchPureShotSuccessful && mBtnPureShot.isChecked()) {
+            builder.setUrlForExport(mPureShotOutputPath);
         }
         mCurrentExportId = ExportUtils.exportImage(mWorkWrapper, builder, this);
     }
@@ -345,8 +377,10 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
                 .setDistance(mImagePlayerView.getDistance())
                 .setYaw(mImagePlayerView.getYaw())
                 .setPitch(mImagePlayerView.getPitch());
-        if (mBtnHDR.isChecked()) {
+        if (mIsStitchHDRSuccessful && mBtnHDR.isChecked()) {
             builder.setUrlForExport(mHDROutputPath);
+        } else if (mIsStitchPureShotSuccessful && mBtnPureShot.isChecked()) {
+            builder.setUrlForExport(mPureShotOutputPath);
         }
         mCurrentExportId = ExportUtils.exportImage(mWorkWrapper, builder, this);
     }
@@ -408,8 +442,11 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mStitchTask != null) {
-            mStitchTask.cancel(true);
+        if (mHDRStitchTask != null) {
+            mHDRStitchTask.cancel(true);
+        }
+        if (mPureShotStitchTask != null) {
+            mPureShotStitchTask.cancel(true);
         }
         if (mImagePlayerView != null) {
             mImagePlayerView.destroy();
@@ -419,11 +456,11 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
         }
     }
 
-    private static class StitchTask extends AsyncTask<Void, Void, Void> {
+    private static class HDRStitchTask extends AsyncTask<Void, Void, Boolean> {
         private WeakReference<PlayAndExportActivity> activityWeakReference;
         private MaterialDialog mStitchDialog;
 
-        private StitchTask(PlayAndExportActivity activity) {
+        private HDRStitchTask(PlayAndExportActivity activity) {
             super();
             activityWeakReference = new WeakReference<>(activity);
             mStitchDialog = new MaterialDialog.Builder(activity)
@@ -441,22 +478,76 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
         }
 
         @Override
-        protected Void doInBackground(Void... aVoid) {
+        protected Boolean doInBackground(Void... aVoid) {
             PlayAndExportActivity stitchActivity = activityWeakReference.get();
             if (stitchActivity != null && !isCancelled()) {
                 // Start HDR stitching
-                stitchActivity.mIsStitchHDRSuccessful =
-                        StitchUtils.generateHDR(stitchActivity.mWorkWrapper, stitchActivity.mHDROutputPath);
+                return StitchUtils.generateHDR(stitchActivity.mWorkWrapper, stitchActivity.mHDROutputPath);
             }
-            return null;
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
             PlayAndExportActivity stitchActivity = activityWeakReference.get();
             if (stitchActivity != null && !isCancelled()) {
-                stitchActivity.playImage(stitchActivity.mRbPlane.isChecked());
+                stitchActivity.mIsStitchHDRSuccessful = result;
+                if (result) {
+                    stitchActivity.playImage(stitchActivity.mRbPlane.isChecked());
+                } else {
+                    stitchActivity.mBtnHDR.setChecked(false);
+                    Toast.makeText(stitchActivity, R.string.export_dialog_msg_hdr_stitch_error, Toast.LENGTH_SHORT).show();
+                }
+            }
+            mStitchDialog.dismiss();
+        }
+    }
+
+    private static class PureShotStitchTask extends AsyncTask<Void, Void, Integer> {
+        private WeakReference<PlayAndExportActivity> activityWeakReference;
+        private MaterialDialog mStitchDialog;
+
+        private PureShotStitchTask(PlayAndExportActivity activity) {
+            super();
+            activityWeakReference = new WeakReference<>(activity);
+            mStitchDialog = new MaterialDialog.Builder(activity)
+                    .content(R.string.export_dialog_msg_pure_shot_stitching)
+                    .progress(true, 100)
+                    .canceledOnTouchOutside(false)
+                    .cancelable(false)
+                    .build();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mStitchDialog.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... aVoid) {
+            PlayAndExportActivity stitchActivity = activityWeakReference.get();
+            if (stitchActivity != null && !isCancelled()) {
+                // Start PureShot stitching
+                return StitchUtils.generatePureShot(stitchActivity.mWorkWrapper, stitchActivity.mPureShotOutputPath, stitchActivity.mPureShotAlgoAssetFolderPath);
+            }
+            return -1;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+            PlayAndExportActivity stitchActivity = activityWeakReference.get();
+            if (stitchActivity != null && !isCancelled()) {
+                stitchActivity.mIsStitchPureShotSuccessful = result == 0;
+                if (result == 0) {
+                    stitchActivity.playImage(stitchActivity.mRbPlane.isChecked());
+                } else {
+                    stitchActivity.mBtnPureShot.setChecked(false);
+                    String toast = stitchActivity.getString(R.string.export_dialog_msg_pure_shot_stitch_error, result);
+                    Toast.makeText(stitchActivity, toast, Toast.LENGTH_SHORT).show();
+                }
             }
             mStitchDialog.dismiss();
         }
