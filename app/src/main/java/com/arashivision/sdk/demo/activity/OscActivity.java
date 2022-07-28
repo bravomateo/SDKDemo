@@ -411,7 +411,7 @@ public class OscActivity extends BaseObserveCameraActivity implements IOscCallba
             OscActivity oscActivity = activityWeakReference.get();
             if (oscActivity != null && !isCancelled() && oscActivity.mFrontSensorCapturePath != null && oscActivity.mRearSensorCapturePath != null) {
                 oscActivity.mStitchOutputPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/SDK_DEMO_OSC/separated_fisheye_" + System.currentTimeMillis() + ".jpg";
-                return StitchUtils.StitchSeparatedFisheyeFile(new WorkWrapper(new String[]{oscActivity.mFrontSensorCapturePath, oscActivity.mRearSensorCapturePath}), oscActivity.mStitchOutputPath);
+                return StitchUtils.stitchSeparatedFisheyeFile(new WorkWrapper(new String[]{oscActivity.mFrontSensorCapturePath, oscActivity.mRearSensorCapturePath}), oscActivity.mStitchOutputPath);
             }
             return -1;
         }
