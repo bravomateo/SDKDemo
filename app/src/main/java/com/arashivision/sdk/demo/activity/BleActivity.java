@@ -11,6 +11,8 @@ import com.arashivision.sdk.demo.R;
 import com.arashivision.sdkcamera.camera.InstaCameraManager;
 import com.arashivision.sdkcamera.camera.callback.IScanBleListener;
 import com.clj.fastble.data.BleDevice;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +46,25 @@ public class BleActivity extends BaseObserveCameraActivity implements IScanBleLi
             showConnectingDialog();
         });
 
-        InstaCameraManager.getInstance().setScanBleListener(this);
-        InstaCameraManager.getInstance().startBleScan(30_000);
+        checkLocaltionPermission();
+    }
+
+    private void checkLocaltionPermission() {
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.Group.LOCATION)
+                .onDenied(permissions -> {
+                    if (AndPermission.hasAlwaysDeniedPermission(this, permissions)) {
+                        AndPermission.with(this)
+                                .runtime()
+                                .setting()
+                                .start(1000);
+                    }
+                    finish();
+                }).onGranted(data -> {
+                    InstaCameraManager.getInstance().setScanBleListener(this);
+                    InstaCameraManager.getInstance().startBleScan(30_000);
+                }).start();
     }
 
     @Override

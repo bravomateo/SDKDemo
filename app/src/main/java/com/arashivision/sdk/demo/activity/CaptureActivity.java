@@ -50,7 +50,7 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
         }
 
         SwitchSensorCallback switchSensorCallback = new SwitchSensorCallback(this);
-        findViewById(R.id.layout_switch_sensor).setVisibility(isOneX2() ? View.VISIBLE : View.GONE);
+        findViewById(R.id.layout_switch_sensor).setVisibility((isOneX2() || isOneX3()) ? View.VISIBLE : View.GONE);
         findViewById(R.id.btn_switch_dual_sensor).setOnClickListener(v -> {
             switchSensorCallback.onStart();
             InstaCameraManager.getInstance().switchCameraMode(InstaCameraManager.CAMERA_MODE_PANORAMA, InstaCameraManager.FOCUS_SENSOR_ALL, switchSensorCallback);
@@ -170,6 +170,10 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
 
     private boolean isOneX2() {
         return CameraType.getForType(InstaCameraManager.getInstance().getCameraType()) == CameraType.ONEX2;
+    }
+
+    private boolean isOneX3() {
+        return CameraType.getForType(InstaCameraManager.getInstance().getCameraType()) == CameraType.X3;
     }
 
     private boolean supportInstaPanoCapture() {

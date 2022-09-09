@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -171,7 +172,7 @@ public class OscActivity extends BaseObserveCameraActivity implements IOscCallba
             }
         });
 
-        if (CameraType.getForType(InstaCameraManager.getInstance().getCameraType()) == CameraType.ONEX2) {
+        if (Arrays.asList(CameraType.ONEX2, CameraType.X3).contains(CameraType.getForType(InstaCameraManager.getInstance().getCameraType()))) {
             findViewById(R.id.layout_separated_fisheye_stitch).setVisibility(View.VISIBLE);
             findViewById(R.id.btn_get_exposure_params).setOnClickListener(v -> {
                 if (isCameraConnected()) {

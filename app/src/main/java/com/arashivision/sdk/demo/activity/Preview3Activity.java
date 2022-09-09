@@ -113,6 +113,8 @@ public class Preview3Activity extends BaseObserveCameraActivity implements IPrev
         CaptureParamsBuilder builder = new CaptureParamsBuilder()
                 .setCameraType(InstaCameraManager.getInstance().getCameraType())
                 .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
+                .setMediaOffsetV2(InstaCameraManager.getInstance().getMediaOffsetV2())
+                .setMediaOffsetV3(InstaCameraManager.getInstance().getMediaOffsetV3())
                 .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
                 .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
                 .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
