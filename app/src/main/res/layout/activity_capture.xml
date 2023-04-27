@@ -48,6 +48,13 @@
                 android:textAllCaps="false" />
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/et_capture_delay_timer"
+            android:hint="set capture delay timer (0/3/5/10/15)"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

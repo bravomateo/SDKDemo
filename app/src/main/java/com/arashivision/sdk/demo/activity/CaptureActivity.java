@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
     private TextView mTvCaptureCount;
     private Button mBtnPlayCameraFile;
     private Button mBtnPlayLocalFile;
+    private EditText etCaptureDelayTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,14 +70,14 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
             if (checkSdCardEnabled()) {
                 int funcMode = InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL;
                 InstaCameraManager.getInstance().setRawToCamera(funcMode, false);
-                InstaCameraManager.getInstance().startNormalCapture(false);
+                InstaCameraManager.getInstance().startNormalCapture(false, getCaptureDelayTime());
             }
         });
         findViewById(R.id.btn_normal_capture_pure_shot).setOnClickListener(v -> {
             if (checkSdCardEnabled()) {
                 int funcMode = InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL;
                 InstaCameraManager.getInstance().setRawToCamera(funcMode, true);
-                InstaCameraManager.getInstance().startNormalCapture(true);
+                InstaCameraManager.getInstance().startNormalCapture(true, getCaptureDelayTime());
             }
         });
 
@@ -83,7 +85,7 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
         findViewById(R.id.btn_normal_pano_capture).setEnabled(supportInstaPanoCapture());
         findViewById(R.id.btn_normal_pano_capture).setOnClickListener(v -> {
             if (checkSdCardEnabled()) {
-                InstaCameraManager.getInstance().startNormalPanoCapture(InstaCameraManager.FOCUS_SENSOR_REAR, false);
+                InstaCameraManager.getInstance().startNormalPanoCapture(InstaCameraManager.FOCUS_SENSOR_REAR, false, getCaptureDelayTime());
             }
         });
 
@@ -94,7 +96,7 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
                     InstaCameraManager.getInstance().setAEBCaptureNum(funcMode, 3);
                     InstaCameraManager.getInstance().setExposureEV(funcMode, 2f);
                 }
-                InstaCameraManager.getInstance().startHDRCapture(false);
+                InstaCameraManager.getInstance().startHDRCapture(false, getCaptureDelayTime());
             }
         });
 
@@ -105,7 +107,7 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
                 int funcMode = InstaCameraManager.FUNCTION_MODE_HDR_PANO_CAPTURE;
                 InstaCameraManager.getInstance().setAEBCaptureNum(funcMode, 3);
                 InstaCameraManager.getInstance().setExposureEV(funcMode, 2f);
-                InstaCameraManager.getInstance().startHDRPanoCapture(InstaCameraManager.FOCUS_SENSOR_FRONT, false);
+                InstaCameraManager.getInstance().startHDRPanoCapture(InstaCameraManager.FOCUS_SENSOR_FRONT, false, getCaptureDelayTime());
             }
         });
 
@@ -161,6 +163,17 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
         mTvCaptureCount = findViewById(R.id.tv_capture_count);
         mBtnPlayCameraFile = findViewById(R.id.btn_play_camera_file);
         mBtnPlayLocalFile = findViewById(R.id.btn_play_local_file);
+        etCaptureDelayTime = findViewById(R.id.et_capture_delay_timer);
+    }
+
+    private int getCaptureDelayTime() {
+        String delayTime = etCaptureDelayTime.getText().toString();
+        if (TextUtils.isEmpty(delayTime)) return 0;
+        try {
+            return Integer.parseInt(delayTime);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private boolean isNanoS() {
