@@ -214,14 +214,15 @@
             android:layout_marginStart="20dp"
             android:text="@string/full_demo_capture"
             android:textSize="18sp" />
-
+        <!-- X4暂不支持直播
+             X4 not support live at this time
         <RadioButton
             android:id="@+id/rb_live"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:text="@string/full_demo_live"
-            android:textSize="18sp" />
+            android:textSize="18sp" />-->
     </RadioGroup>
 
     <ToggleButton

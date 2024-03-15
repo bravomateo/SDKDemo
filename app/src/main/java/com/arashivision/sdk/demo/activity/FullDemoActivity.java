@@ -83,6 +83,7 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
             onCameraBatteryUpdate(cameraManager.getCameraCurrentBatteryLevel(), cameraManager.isCameraCharging());
             onCameraSDCardStateChanged(cameraManager.isSdCardEnabled());
             onCameraStorageChanged(cameraManager.getCameraStorageFreeSpace(), cameraManager.getCameraStorageTotalSpace());
+            InstaCameraManager.getInstance().setFunctionModeToCamera(InstaCameraManager.FUNCTION_MODE_RECORD_NORMAL);
         }
         cameraManager.registerCameraChangedCallback(this);
     }
@@ -124,6 +125,16 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
         mRgCaptureMode.setOnCheckedChangeListener((group, checkedId) -> {
             if (mNeedToRestartPreview) {
                 checkToRestartCameraPreviewStream();
+            }
+            switch (checkedId) {
+                case R.id.rb_record:
+                    InstaCameraManager.getInstance().setFunctionModeToCamera(InstaCameraManager.FUNCTION_MODE_RECORD_NORMAL);
+                    break;
+                case R.id.rb_capture:
+                    InstaCameraManager.getInstance().setFunctionModeToCamera(InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL);
+                    break;
+                default:
+                    InstaCameraManager.getInstance().setFunctionModeToCamera(InstaCameraManager.FUNCTION_MODE_PREVIEW_STREAM);
             }
         });
 
@@ -175,11 +186,12 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
     // Get the preview mode currently to be turned on
     private int getNewPreviewType() {
         int checkedId = mRgCaptureMode.getCheckedRadioButtonId();
-        if (checkedId == R.id.rb_live) {
-            // 直播模式
-            // Live Mode
-            return InstaCameraManager.PREVIEW_TYPE_LIVE;
-        } else if (checkedId == R.id.rb_record && mBtnCameraWork.isChecked()) {
+//        if (checkedId == R.id.rb_live) {
+//            // 直播模式
+//            // Live Mode
+//            return InstaCameraManager.PREVIEW_TYPE_LIVE;
+//        } else
+        if (checkedId == R.id.rb_record && mBtnCameraWork.isChecked()) {
             // 即将开启录像
             // About to start recording
             return InstaCameraManager.PREVIEW_TYPE_RECORD;

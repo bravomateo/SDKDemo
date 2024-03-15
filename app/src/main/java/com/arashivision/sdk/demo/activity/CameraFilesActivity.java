@@ -223,7 +223,8 @@ public class CameraFilesActivity extends BaseObserveCameraActivity {
                     InstaCameraManager.getInstance().getCameraHttpPrefix(),
                     InstaCameraManager.getInstance().getCameraInfoMap(),
                     InstaCameraManager.getInstance().getAllUrlList(),
-                    InstaCameraManager.getInstance().getRawUrlList());
+                    InstaCameraManager.getInstance().getRawUrlList(),
+                    InstaCameraManager.getInstance().getAllInsDataList());
         }
 
         @Override

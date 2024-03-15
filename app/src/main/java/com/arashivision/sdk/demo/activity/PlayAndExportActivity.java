@@ -16,6 +16,7 @@ import android.widget.ToggleButton;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.arashivision.insta360.basemedia.asset.AssetConstants;
 import com.arashivision.sdk.demo.R;
 import com.arashivision.sdk.demo.util.TimeFormat;
 import com.arashivision.sdkmedia.export.ExportImageParamsBuilder;
@@ -101,9 +102,10 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
 
         // HDR stitch
         mBtnHDR = findViewById(R.id.btn_hdr_stitch);
-        mBtnHDR.setVisibility(mWorkWrapper.isHDRPhoto() ? View.VISIBLE : View.GONE);
+        boolean isHDRPhoto = mWorkWrapper.isHDRPhoto() != AssetConstants.HDRType.NO_HDR;
+        mBtnHDR.setVisibility(isHDRPhoto ? View.VISIBLE : View.GONE);
         mBtnHDR.setOnClickListener(v -> {
-            if (mWorkWrapper.isHDRPhoto()) {
+            if (isHDRPhoto) {
                 if (mBtnHDR.isChecked()) {
                     mBtnPureShot.setChecked(false);
                     mHDRStitchTask = new HDRStitchTask(this);
