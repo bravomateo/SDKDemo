@@ -211,8 +211,10 @@
     <string name="setting_apply">Apply</string>
     <string name="setting_camera_beep">Camera Beep: </string>
     <string name="setting_calibrate_gyro">Calibrate Gyro</string>
+    <string name="setting_send_gyro">Send Gps Data</string>
     <string name="setting_format_sd">Format SD Card</string>
     <string name="setting_dialog_msg_gyro_calirate_prompt">Before calibrate, please stand the camera upright on a stable and level surface.</string>
+    <string name="setting_dialog_msg_send_current_gps">Send the current GPS data to the camera</string>
     <string name="setting_dialog_msg_gyro_calirating">Gyro calibrating...</string>
     <string name="setting_dialog_msg_gyro_calirate_success">Gyro calibrate successful</string>
     <string name="setting_dialog_msg_gyro_calirate_failed">Gyro calibrate failed</string>

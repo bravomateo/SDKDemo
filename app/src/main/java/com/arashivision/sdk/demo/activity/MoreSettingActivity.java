@@ -1,5 +1,6 @@
 package com.arashivision.sdk.demo.activity;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -10,12 +11,16 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.arashivision.insta360.basemedia.model.gps.GpsData;
 import com.arashivision.sdk.demo.R;
+import com.arashivision.sdk.demo.util.LocationManager;
 import com.arashivision.sdkcamera.camera.InstaCameraManager;
 import com.arashivision.sdkcamera.camera.callback.ICameraOperateCallback;
 import com.xw.repo.BubbleSeekBar;
 
 import androidx.annotation.Nullable;
+
+import java.util.Arrays;
 
 public class MoreSettingActivity extends BaseObserveCameraActivity {
 
@@ -24,6 +29,7 @@ public class MoreSettingActivity extends BaseObserveCameraActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_setting);
         setTitle(R.string.setting_toolbar_title);
+        LocationManager.getInstance().registerLocation(this.getApplicationContext());
         initFunctionModeGroup();
         resetCameraEV();
         resetCameraExposureMode();
@@ -34,7 +40,14 @@ public class MoreSettingActivity extends BaseObserveCameraActivity {
         resetCameraWhiteBalance();
         initCameraBeepSwitch();
         initCalibrateGyro();
+        initSendGpsData();
         initFormatStorage();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocationManager.getInstance().unregisterLocation();
+        super.onDestroy();
     }
 
     private void initFunctionModeGroup() {
@@ -303,6 +316,33 @@ public class MoreSettingActivity extends BaseObserveCameraActivity {
                         });
                     }
                 });
+            });
+        });
+    }
+
+
+    private void initSendGpsData() {
+        findViewById(R.id.btn_send_gps).setOnClickListener(v -> {
+            MaterialDialog dialog = new MaterialDialog.Builder(this)
+                    .content(R.string.setting_dialog_msg_send_current_gps)
+                    .negativeText(R.string.setting_dialog_cancel)
+                    .positiveText(R.string.setting_dialog_sure)
+                    .show();
+
+            dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v1 -> {
+                Location location = LocationManager.getInstance().getCurrentLocation();
+                if (location != null) {
+                    GpsData gpsData = new GpsData();
+                    gpsData.setLatitude(location.getLatitude());
+                    gpsData.setLongitude(location.getLongitude());
+                    gpsData.setGroundSpeed(location.getSpeed());
+                    gpsData.setGroundCrouse(location.getBearing());
+                    gpsData.setGeoidUndulation(location.getAltitude());
+                    gpsData.setUTCTimeMs(location.getTime());
+                    gpsData.setVaild(true);
+                    InstaCameraManager.getInstance().setGpsData(GpsData.GpsData2ByteArray(Arrays.asList(gpsData)));
+                }
+                dialog.dismiss();
             });
         });
     }

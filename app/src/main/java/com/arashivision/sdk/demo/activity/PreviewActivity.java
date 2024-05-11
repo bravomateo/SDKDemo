@@ -13,6 +13,7 @@ import android.widget.ToggleButton;
 
 import com.arashivision.insta360.basecamera.camera.CameraType;
 import com.arashivision.sdk.demo.R;
+import com.arashivision.sdk.demo.util.PreviewParamsUtil;
 import com.arashivision.sdkcamera.camera.InstaCameraManager;
 import com.arashivision.sdkcamera.camera.callback.IPreviewStatusListener;
 import com.arashivision.sdkcamera.camera.resolution.PreviewStreamResolution;
@@ -217,14 +218,7 @@ public class PreviewActivity extends BaseObserveCameraActivity implements IPrevi
     }
 
     private CaptureParamsBuilder createParams() {
-        CaptureParamsBuilder builder = new CaptureParamsBuilder()
-                .setCameraType(InstaCameraManager.getInstance().getCameraType())
-                .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
-                .setMediaOffsetV2(InstaCameraManager.getInstance().getMediaOffsetV2())
-                .setMediaOffsetV3(InstaCameraManager.getInstance().getMediaOffsetV3())
-                .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
-                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
-                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
+        CaptureParamsBuilder builder = PreviewParamsUtil.getCaptureParamsBuilder()
                 .setStabType(getStabType())
                 .setStabEnabled(mSpinnerStabType.getSelectedItemPosition() != 4);
         if (mCurrentResolution != null) {

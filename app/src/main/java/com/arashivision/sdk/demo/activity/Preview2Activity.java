@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.ToggleButton;
 
 import com.arashivision.sdk.demo.R;
+import com.arashivision.sdk.demo.util.PreviewParamsUtil;
 import com.arashivision.sdkcamera.camera.InstaCameraManager;
 import com.arashivision.sdkcamera.camera.callback.IPreviewStatusListener;
 import com.arashivision.sdkmedia.player.capture.CaptureParamsBuilder;
@@ -106,16 +107,8 @@ public class Preview2Activity extends BaseObserveCameraActivity implements IPrev
     }
 
     private CaptureParamsBuilder createParams() {
-        CaptureParamsBuilder builder = new CaptureParamsBuilder()
-                .setCameraType(InstaCameraManager.getInstance().getCameraType())
-                .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
-                .setMediaOffsetV2(InstaCameraManager.getInstance().getMediaOffsetV2())
-                .setMediaOffsetV3(InstaCameraManager.getInstance().getMediaOffsetV3())
-                .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
-                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
-                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
+        return PreviewParamsUtil.getCaptureParamsBuilder()
                 .setCameraRenderSurfaceInfo(mSurfaceView.getHolder().getSurface(), mSurfaceView.getWidth(), mSurfaceView.getHeight());
-        return builder;
     }
 
     // 每次开启新预览时，也要创建新的Surface传进参数，不能复用Surface

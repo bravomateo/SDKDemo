@@ -211,8 +211,10 @@
     <string name="setting_apply">应用</string>
     <string name="setting_camera_beep">相机提示音: </string>
     <string name="setting_calibrate_gyro">陀螺仪矫正</string>
+    <string name="setting_send_gyro">发送GPS数据</string>
     <string name="setting_format_sd">格式化SD卡</string>
     <string name="setting_dialog_msg_gyro_calirate_prompt">矫正前请先将相机竖直放置在平稳的表面上</string>
+    <string name="setting_dialog_msg_send_current_gps">发送当前GPS数据给相机</string>
     <string name="setting_dialog_msg_gyro_calirating">陀螺仪矫正中...</string>
     <string name="setting_dialog_msg_gyro_calirate_success">陀螺仪矫正成功</string>
     <string name="setting_dialog_msg_gyro_calirate_failed">陀螺仪矫正失败</string>

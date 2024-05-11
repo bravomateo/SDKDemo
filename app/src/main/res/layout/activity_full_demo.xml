@@ -176,6 +176,30 @@
             android:textSize="12sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_send_gps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GPS"
+            android:textSize="16sp" />
+
+        <Switch
+            android:id="@+id/switch_send_gps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+
     <TextView
         android:id="@+id/tv_record_duration"
         android:layout_width="wrap_content"
@@ -244,7 +268,7 @@
         android:visibility="gone"
         app:constraint_referenced_ids="player_capture, tv_sd_card_state, tv_battery_level,
         tv_record_duration, rg_capture_mode, btn_camera_work, layout_exposure_data,
-        layout_gyro_data, layout_video_data" />
+        layout_gyro_data, layout_video_data, ll_send_gps" />
 
     <TextView
         android:id="@+id/tv_prompt_connect_camera"

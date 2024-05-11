@@ -98,7 +98,7 @@ public class MainActivity extends BaseObserveCameraActivity {
     private void checkStoragePermission() {
         AndPermission.with(this)
                 .runtime()
-                .permission(Permission.Group.STORAGE)
+                .permission(Permission.Group.STORAGE, Permission.Group.LOCATION)
                 .onDenied(permissions -> {
                     if (AndPermission.hasAlwaysDeniedPermission(this, permissions)) {
                         AndPermission.with(this)

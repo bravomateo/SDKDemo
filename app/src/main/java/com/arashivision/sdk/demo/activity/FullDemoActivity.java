@@ -1,18 +1,33 @@
 package com.arashivision.sdk.demo.activity;
 
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.arashivision.graphicpath.render.source.ExtraInfoAsset;
+import com.arashivision.insta360.basecamera.camera.BaseCamera;
+import com.arashivision.insta360.basecamera.camera.CameraType;
+import com.arashivision.insta360.basemedia.asset.AssetUtils;
+import com.arashivision.insta360.basemedia.asset.Gps;
+import com.arashivision.insta360.basemedia.asset.WindowCropInfo;
+import com.arashivision.insta360.basemedia.model.gps.GpsData;
+import com.arashivision.insta360.basemedia.model.offset.OffsetData;
 import com.arashivision.sdk.demo.R;
 import com.arashivision.sdk.demo.util.FileUtils;
+import com.arashivision.sdk.demo.util.LocationManager;
 import com.arashivision.sdk.demo.util.NetworkManager;
+import com.arashivision.sdk.demo.util.PreviewParamsUtil;
 import com.arashivision.sdk.demo.util.TimeFormat;
 import com.arashivision.sdkcamera.camera.InstaCameraManager;
 import com.arashivision.sdkcamera.camera.callback.ICameraChangedCallback;
@@ -28,6 +43,7 @@ import com.arashivision.sdkmedia.player.capture.CaptureParamsBuilder;
 import com.arashivision.sdkmedia.player.capture.InstaCapturePlayerView;
 import com.arashivision.sdkmedia.player.listener.PlayerViewListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -40,6 +56,8 @@ import androidx.constraintlayout.widget.Group;
  */
 public class FullDemoActivity extends AppCompatActivity implements ICameraChangedCallback,
         IPreviewStatusListener, ICaptureStatusListener, ILiveStatusListener {
+
+    private final String TAG = this.getClass().getSimpleName();
 
     private ViewGroup mLayoutLoading;
     private Group mLayoutPromptConnectCamera;
@@ -62,11 +80,14 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
     private TextView mTvGyroGZ;
     private TextView mTvVideoTimestamp;
     private TextView mTvVideoSize;
+    private Switch mGpsSwitch;
 
     private boolean mNeedToRestartPreview;
     private boolean mIsCaptureButtonClicked;
     private int mCurPreviewType = -1;
     private PreviewStreamResolution mCurPreviewResolution = null;
+
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +97,7 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         bindNormalViews();
         bindPlayerViews();
+        LocationManager.getInstance().registerLocation(this.getApplicationContext());
 
         InstaCameraManager cameraManager = InstaCameraManager.getInstance();
         if (isCameraConnected()) {
@@ -99,6 +121,8 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
         findViewById(R.id.btn_connect_by_usb).setOnClickListener(v -> {
             openCamera(InstaCameraManager.CONNECT_TYPE_USB);
         });
+
+        mGpsSwitch = findViewById(R.id.switch_send_gps);
     }
 
     private void bindPlayerViews() {
@@ -180,6 +204,17 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
             mBtnCameraWork.setChecked(true);
         }
         mNeedToRestartPreview = true;
+    }
+
+    private int getFunctionMode(int previewType) {
+        switch (previewType) {
+            case InstaCameraManager.PREVIEW_TYPE_NORMAL:
+                return InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL;
+            case InstaCameraManager.PREVIEW_TYPE_RECORD:
+                return InstaCameraManager.FUNCTION_MODE_RECORD_NORMAL;
+            default:
+                return InstaCameraManager.FUNCTION_MODE_PREVIEW_STREAM;
+        }
     }
 
     // 获取当前要开启的预览模式
@@ -276,6 +311,9 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
             if (mCurPreviewType != newPreviewType || mCurPreviewResolution != newResolution) {
                 mCurPreviewType = newPreviewType;
                 mCurPreviewResolution = newResolution;
+                if (CameraType.X4 == CameraType.getForType(InstaCameraManager.getInstance().getCameraType())) {
+                    InstaCameraManager.getInstance().setFunctionModeToCamera(getFunctionMode(newPreviewType));
+                }
                 InstaCameraManager.getInstance().closePreviewStream();
                 InstaCameraManager.getInstance().startPreviewStream(newResolution, newPreviewType);
                 return true;
@@ -320,14 +358,7 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
     }
 
     private CaptureParamsBuilder createCaptureParams() {
-        return new CaptureParamsBuilder()
-                .setCameraType(InstaCameraManager.getInstance().getCameraType())
-                .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
-                .setMediaOffsetV2(InstaCameraManager.getInstance().getMediaOffsetV2())
-                .setMediaOffsetV3(InstaCameraManager.getInstance().getMediaOffsetV3())
-                .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
-                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
-                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
+        return PreviewParamsUtil.getCaptureParamsBuilder()
                 .setLive(mCurPreviewType == InstaCameraManager.PREVIEW_TYPE_LIVE)  // 是否为直播模式
                 .setResolutionParams(mCurPreviewResolution.width, mCurPreviewResolution.height, mCurPreviewResolution.fps);
     }
@@ -377,7 +408,7 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
                 break;
             case InstaCameraManager.PREVIEW_TYPE_NORMAL:
                 mLayoutLoading.setVisibility(View.VISIBLE);
-                InstaCameraManager.getInstance().startNormalCapture(false);
+                InstaCameraManager.getInstance().startNormalCapture(false, getExtraData(), 0);
                 break;
             case InstaCameraManager.PREVIEW_TYPE_LIVE:
                 NetworkManager.getInstance().exchangeNetToMobile();
@@ -413,6 +444,70 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
         }
     }
 
+    private byte[] getExtraData() {
+        ExtraInfoAsset asset = AssetUtils.convert(new byte[0]);
+        if (mGpsSwitch.isChecked()) {
+            Location location = LocationManager.getInstance().getCurrentLocation();
+            if (location != null) {
+                Gps gps = new Gps();
+                gps.setAltitude(location.getAltitude());
+                gps.setLatitude(location.getLatitude());
+                gps.setLongitude(location.getLongitude());
+                AssetUtils.setGps(asset, gps);
+            }
+        }
+        byte[] result = AssetUtils.convert(asset);
+        if (result == null) {
+            result = new byte[0];
+        }
+        return result;
+    }
+
+    /************************* gps data *************************/
+    private List<GpsData> mCollectGpsDataList = new ArrayList<GpsData>();
+    private Runnable mCollectGpsDataRunnable = new Runnable(){
+        @Override
+        public void run() {
+            Location location = LocationManager.getInstance().getCurrentLocation();
+            if (location != null) {
+                GpsData gpsData = new GpsData();
+                gpsData.setLatitude(location.getLatitude());
+                gpsData.setLongitude(location.getLongitude());
+                gpsData.setGroundSpeed(location.getSpeed());
+                gpsData.setGroundCrouse(location.getBearing());
+                gpsData.setGeoidUndulation(location.getAltitude());
+                gpsData.setUTCTimeMs(location.getTime());
+                gpsData.setVaild(true);
+                mCollectGpsDataList.add(gpsData);
+                if (mCollectGpsDataList.size() >= 20) {
+                    InstaCameraManager.getInstance().setGpsData(GpsData.GpsData2ByteArray(mCollectGpsDataList));
+                    mCollectGpsDataList.clear();
+                }
+            }
+            mMainHandler.postDelayed(this, 100);
+        }
+    };
+
+    private void startSendGpsData() {
+        mCollectGpsDataList.clear();
+        mMainHandler.post(mCollectGpsDataRunnable);
+    }
+
+    private void stopSendGpsData() {
+        if (!mCollectGpsDataList.isEmpty()) {
+            InstaCameraManager.getInstance().setGpsData(GpsData.GpsData2ByteArray(mCollectGpsDataList));
+            mCollectGpsDataList.clear();
+        }
+        mMainHandler.removeCallbacks(mCollectGpsDataRunnable);
+    }
+
+    @Override
+    public void onCaptureWorking() {
+        if (mCurPreviewType == InstaCameraManager.PREVIEW_TYPE_RECORD && mGpsSwitch != null && mGpsSwitch.isChecked()) {
+            startSendGpsData();
+        }
+    }
+
     @Override
     public void onCaptureStopping() {
         mLayoutLoading.setVisibility(View.VISIBLE);
@@ -423,12 +518,36 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
         mLayoutLoading.setVisibility(View.GONE);
         mTvRecordDuration.setText(null);
         mBtnCameraWork.setChecked(false);
+        stopSendGpsData();
         checkToRestartCameraPreviewStream();
         // 拍摄结束返回文件路径，可执行下载、播放、导出操作，任君选择
         // 如果是HDR拍照则必须从相机下载到本地才可进行HDR合成操作
         // After capture, the file paths will be returned. Then download, play and export operations can be performed
         // If it is HDR Capture, you must download images from the camera to the local to perform HDR stitching operation
 //        PlayAndExportActivity.launchActivity(this, filePaths);
+    }
+
+    @Override
+    public void onCameraPreviewStreamParamsChanged(BaseCamera baseCamera, boolean isPreviewStreamParamsChanged) {
+        Log.d(TAG, "liveStreamParams isPreviewStreamParamsChanged:" + isPreviewStreamParamsChanged);
+        if (!isPreviewStreamParamsChanged) {
+            Log.d(TAG, "liveStreamParams has nothing changed, ignored");
+            return;
+        }
+        WindowCropInfo curWindowCropInfo = mCapturePlayerView.getWindowCropInfo();
+        WindowCropInfo cameraWindowCropInfo = PreviewParamsUtil.windowCropInfoConversion(baseCamera.getWindowCropInfo());
+        if (curWindowCropInfo != null && cameraWindowCropInfo != null) {
+            if (curWindowCropInfo.getSrcWidth() != cameraWindowCropInfo.getSrcWidth()
+                    || curWindowCropInfo.getSrcHeight() != cameraWindowCropInfo.getSrcHeight()
+                    || curWindowCropInfo.getDesWidth() != cameraWindowCropInfo.getDesWidth()
+                    || curWindowCropInfo.getDesHeight() != cameraWindowCropInfo.getDesHeight()
+                    || curWindowCropInfo.getOffsetX() != cameraWindowCropInfo.getOffsetX()
+                    || curWindowCropInfo.getOffsetY() != cameraWindowCropInfo.getOffsetY()) {
+                Log.d(TAG, "liveStreamParams changed windowCropInfo: " + baseCamera.getWindowCropInfo().toString());
+                mCapturePlayerView.setWindowCropInfo(cameraWindowCropInfo);
+                mCapturePlayerView.setOffset(new OffsetData(baseCamera.getMediaOffset(), baseCamera.getMediaOffsetV2(), baseCamera.getMediaOffsetV3()));
+            }
+        }
     }
 
     @Override
@@ -470,6 +589,8 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
     protected void onDestroy() {
         super.onDestroy();
         InstaCameraManager.getInstance().unregisterCameraChangedCallback(this);
+        LocationManager.getInstance().unregisterLocation();
+        mMainHandler.removeCallbacks(mCollectGpsDataRunnable);
     }
 
 }

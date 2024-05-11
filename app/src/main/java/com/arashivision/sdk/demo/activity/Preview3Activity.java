@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.ToggleButton;
 
 import com.arashivision.sdk.demo.R;
+import com.arashivision.sdk.demo.util.PreviewParamsUtil;
 import com.arashivision.sdkcamera.camera.InstaCameraManager;
 import com.arashivision.sdkcamera.camera.callback.IPreviewStatusListener;
 import com.arashivision.sdkmedia.player.capture.CaptureParamsBuilder;
@@ -110,16 +111,8 @@ public class Preview3Activity extends BaseObserveCameraActivity implements IPrev
     }
 
     private CaptureParamsBuilder createParams() {
-        CaptureParamsBuilder builder = new CaptureParamsBuilder()
-                .setCameraType(InstaCameraManager.getInstance().getCameraType())
-                .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
-                .setMediaOffsetV2(InstaCameraManager.getInstance().getMediaOffsetV2())
-                .setMediaOffsetV3(InstaCameraManager.getInstance().getMediaOffsetV3())
-                .setCameraSelfie(InstaCameraManager.getInstance().isCameraSelfie())
-                .setGyroTimeStamp(InstaCameraManager.getInstance().getGyroTimeStamp())
-                .setBatteryType(InstaCameraManager.getInstance().getBatteryType())
+        return PreviewParamsUtil.getCaptureParamsBuilder()
                 .setCameraRenderSurfaceInfo(mImageReader.getSurface(), mImageReader.getWidth(), mImageReader.getHeight());
-        return builder;
     }
 
     private void createSurfaceView() {
