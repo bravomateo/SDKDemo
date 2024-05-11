@@ -2,6 +2,7 @@ package com.arashivision.sdk.demo.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,7 +12,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
+import com.arashivision.insta360.basecamera.camera.BaseCamera;
 import com.arashivision.insta360.basecamera.camera.CameraType;
+import com.arashivision.insta360.basemedia.asset.WindowCropInfo;
+import com.arashivision.insta360.basemedia.model.offset.OffsetData;
 import com.arashivision.sdk.demo.R;
 import com.arashivision.sdk.demo.util.PreviewParamsUtil;
 import com.arashivision.sdkcamera.camera.InstaCameraManager;
@@ -250,6 +254,30 @@ public class PreviewActivity extends BaseObserveCameraActivity implements IPrevi
         // 预览开启失败
         // Preview Failed
         mBtnSwitch.setChecked(false);
+    }
+
+
+    @Override
+    public void onCameraPreviewStreamParamsChanged(BaseCamera baseCamera, boolean isPreviewStreamParamsChanged) {
+        Log.d(TAG, "liveStreamParams isPreviewStreamParamsChanged:" + isPreviewStreamParamsChanged);
+        if (!isPreviewStreamParamsChanged) {
+            Log.d(TAG, "liveStreamParams has nothing changed, ignored");
+            return;
+        }
+        WindowCropInfo curWindowCropInfo = mCapturePlayerView.getWindowCropInfo();
+        WindowCropInfo cameraWindowCropInfo = PreviewParamsUtil.windowCropInfoConversion(baseCamera.getWindowCropInfo());
+        if (mCapturePlayerView.isPlaying() && curWindowCropInfo != null && cameraWindowCropInfo != null) {
+            if (curWindowCropInfo.getSrcWidth() != cameraWindowCropInfo.getSrcWidth()
+                    || curWindowCropInfo.getSrcHeight() != cameraWindowCropInfo.getSrcHeight()
+                    || curWindowCropInfo.getDesWidth() != cameraWindowCropInfo.getDesWidth()
+                    || curWindowCropInfo.getDesHeight() != cameraWindowCropInfo.getDesHeight()
+                    || curWindowCropInfo.getOffsetX() != cameraWindowCropInfo.getOffsetX()
+                    || curWindowCropInfo.getOffsetY() != cameraWindowCropInfo.getOffsetY()) {
+                Log.d(TAG, "liveStreamParams changed windowCropInfo: " + baseCamera.getWindowCropInfo().toString());
+                mCapturePlayerView.setWindowCropInfo(cameraWindowCropInfo);
+                mCapturePlayerView.setOffset(new OffsetData(baseCamera.getMediaOffset(), baseCamera.getMediaOffsetV2(), baseCamera.getMediaOffsetV3()));
+            }
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import com.arashivision.sdkmedia.player.capture.CaptureParamsBuilder;
 public class PreviewParamsUtil {
 
     public static CaptureParamsBuilder getCaptureParamsBuilder() {
+
         return new CaptureParamsBuilder()
                 .setCameraType(InstaCameraManager.getInstance().getCameraType())
                 .setMediaOffset(InstaCameraManager.getInstance().getMediaOffset())
@@ -19,6 +20,7 @@ public class PreviewParamsUtil {
     }
 
     public static WindowCropInfo windowCropInfoConversion(com.arashivision.onecamera.camerarequest.WindowCropInfo cameraWindowCropInfo) {
+        if (cameraWindowCropInfo == null) return null;
         WindowCropInfo windowCropInfo = new WindowCropInfo();
         windowCropInfo.setDesHeight(cameraWindowCropInfo.getDstHeight());
         windowCropInfo.setDesWidth(cameraWindowCropInfo.getDstWidth());

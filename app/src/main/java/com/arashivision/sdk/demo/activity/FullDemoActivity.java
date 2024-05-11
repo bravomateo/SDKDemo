@@ -536,7 +536,7 @@ public class FullDemoActivity extends AppCompatActivity implements ICameraChange
         }
         WindowCropInfo curWindowCropInfo = mCapturePlayerView.getWindowCropInfo();
         WindowCropInfo cameraWindowCropInfo = PreviewParamsUtil.windowCropInfoConversion(baseCamera.getWindowCropInfo());
-        if (curWindowCropInfo != null && cameraWindowCropInfo != null) {
+        if (mCapturePlayerView.isPlaying() && curWindowCropInfo != null && cameraWindowCropInfo != null) {
             if (curWindowCropInfo.getSrcWidth() != cameraWindowCropInfo.getSrcWidth()
                     || curWindowCropInfo.getSrcHeight() != cameraWindowCropInfo.getSrcHeight()
                     || curWindowCropInfo.getDesWidth() != cameraWindowCropInfo.getDesWidth()
