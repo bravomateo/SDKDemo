@@ -252,7 +252,7 @@
     <string name="play_toast_empty_path">文件路径为空</string>
     <string name="play_toast_download_first">请先从相机下载文件到本地</string>
     <string name="play_toast_not_hdr">不是HDR图片，无法合成</string>
-    <string name="play_toast_not_pure_shot">不是PureShot图片，无法合成</string>
+    <string name="play_toast_not_pure_shot">不是成</string>
     <string name="play_toast_load_finish">加载完成</string>
     <string name="play_toast_fail_desc">失败(%d)  %s</string>
     <string name="export_dialog_msg_exporting">正在导出中...</string>

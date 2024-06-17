@@ -1,6 +1,6 @@
 package com.arashivision.sdk.demo.model;
 
-public class CaptureExposureData {
+public class    CaptureExposureData {
     public int exposureProgram;
     public int iso;
     public double shutterSpeed;

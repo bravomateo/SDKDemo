@@ -21,7 +21,8 @@ allprojects {
         maven { url 'https://jitpack.io' }
 //        maven { url 'file:///usr/local/apache-maven-3.8.7/repository' }
         maven {
-            url 'http://nexus.arashivision.com:9999/repository/maven-public/'
+            url "http://nexus.arashivision.com:9999/repository/maven-public/"
+            allowInsecureProtocol = true
             credentials {
                 username = 'deployment'
                 password = 'test123'

@@ -254,7 +254,7 @@
     <string name="play_toast_not_hdr">This is not HDR photo</string>
     <string name="play_toast_not_pure_shot">This is not PureShot photo</string>
     <string name="play_toast_load_finish">Load finish</string>
-    <string name="play_toast_fail_desc">onFail(%d)  %s</string>
+    <string name="play_toast_fail_desc">onFail</string>
     <string name="export_dialog_msg_exporting">Exporting...</string>
     <string name="export_dialog_msg_export_success">Export successful.\nSave directory: %s</string>
     <string name="export_dialog_msg_export_failed">Export failed(%d)</string>
