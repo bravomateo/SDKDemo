@@ -46,13 +46,20 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
         setTitle(R.string.capture_toolbar_title);
         bindViews();
 
+        // Check if a camera is connected. If no camera is connected, the activity ends.
         if (InstaCameraManager.getInstance().getCameraConnectedType() == InstaCameraManager.CONNECT_TYPE_NONE) {
             finish();
             return;
         }
 
+        // Handle camera sensor change operations within the activity.
         SwitchSensorCallback switchSensorCallback = new SwitchSensorCallback(this);
-        findViewById(R.id.layout_switch_sensor).setVisibility((isOneX2() || isOneX3()) ? View.VISIBLE : View.GONE);
+
+        // Check if the connected camera is One X2 or One X3. If so, it makes the view visible.
+        findViewById(R.id.layout_switch_sensor).setVisibility((isOneX2() || isOneX3() ) ? View.VISIBLE : View.GONE);
+
+
+        // Each button configures the camera to use different modes and sensors.
         findViewById(R.id.btn_switch_dual_sensor).setOnClickListener(v -> {
             switchSensorCallback.onStart();
             InstaCameraManager.getInstance().switchCameraMode(InstaCameraManager.CAMERA_MODE_PANORAMA, InstaCameraManager.FOCUS_SENSOR_ALL, switchSensorCallback);
@@ -66,21 +73,32 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
             InstaCameraManager.getInstance().switchCameraMode(InstaCameraManager.CAMERA_MODE_SINGLE_REAR, InstaCameraManager.FOCUS_SENSOR_REAR, switchSensorCallback);
         });
 
+
+
         findViewById(R.id.btn_normal_capture).setOnClickListener(v -> {
-            if (checkSdCardEnabled()) {
+            if (checkSdCardEnabled()) { // check if SD card is Enabled
+                // Sets the function mode to FUNCTION MODE CAPTURE NORMAL, indicating that a normal capture is to be performed.
                 int funcMode = InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL;
+                // Set the capture mode to not save images in RAW format
                 InstaCameraManager.getInstance().setRawToCamera(funcMode, false);
+                // Set to start a normal capture without RAW format and with the specified delay time
                 InstaCameraManager.getInstance().startNormalCapture(false, getCaptureDelayTime());
             }
         });
+
         findViewById(R.id.btn_normal_capture_pure_shot).setOnClickListener(v -> {
-            if (checkSdCardEnabled()) {
+            if (checkSdCardEnabled()) { // check if SD card is Enabled
+                // Sets the function mode to FUNCTION MODE CAPTURE NORMAL, indicating that a normal capture is to be performed.
                 int funcMode = InstaCameraManager.FUNCTION_MODE_CAPTURE_NORMAL;
+                // Set the capture mode to  save images in RAW format
                 InstaCameraManager.getInstance().setRawToCamera(funcMode, true);
+                // Set to start a normal capture with RAW format and with the specified delay time
                 InstaCameraManager.getInstance().startNormalCapture(true, getCaptureDelayTime());
             }
         });
 
+
+        // Check if the connected camera is One X2. If so, it makes the view visible (does not apply)
         findViewById(R.id.btn_normal_pano_capture).setVisibility(isOneX2() ? View.VISIBLE : View.GONE);
         findViewById(R.id.btn_normal_pano_capture).setEnabled(supportInstaPanoCapture());
         findViewById(R.id.btn_normal_pano_capture).setOnClickListener(v -> {
@@ -89,6 +107,8 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
             }
         });
 
+
+        // Check if the connected camera is NanoS (does not apply)
         findViewById(R.id.btn_hdr_capture).setOnClickListener(v -> {
             if (checkSdCardEnabled()) {
                 if (!isNanoS()) {
@@ -100,6 +120,8 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
             }
         });
 
+
+        // Check if the connected camera is One X2. If so, it makes the view visible (does not apply).
         findViewById(R.id.btn_hdr_pano_capture).setVisibility(isOneX2() ? View.VISIBLE : View.GONE);
         findViewById(R.id.btn_hdr_pano_capture).setEnabled(supportInstaPanoCapture());
         findViewById(R.id.btn_hdr_pano_capture).setOnClickListener(v -> {
@@ -111,37 +133,45 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
             }
         });
 
+
         findViewById(R.id.btn_interval_shooting_start).setOnClickListener(v -> {
-            if (checkSdCardEnabled()) {
-                InstaCameraManager.getInstance().setIntervalShootingTime(3000);
-                InstaCameraManager.getInstance().startIntervalShooting();
+            if (checkSdCardEnabled()) { // check if SD card is Enabled.
+                InstaCameraManager.getInstance().setIntervalShootingTime(3000); // Sets the time interval between captures to 3 seconds.
+                InstaCameraManager.getInstance().startIntervalShooting(); // Start interval capture.
             }
         });
 
+        // Set the button to stop interval capture
         findViewById(R.id.btn_interval_shooting_stop).setOnClickListener(v -> {
             InstaCameraManager.getInstance().stopIntervalShooting();
         });
 
+
+        // Set the button to start standard recording
         findViewById(R.id.btn_normal_record_start).setOnClickListener(v -> {
             if (checkSdCardEnabled()) {
                 InstaCameraManager.getInstance().startNormalRecord();
             }
         });
 
+        // Set the button to stop standard recording
         findViewById(R.id.btn_normal_record_stop).setOnClickListener(v -> {
             InstaCameraManager.getInstance().stopNormalRecord();
         });
 
+        // Set the button to start HDR recording
         findViewById(R.id.btn_hdr_record_start).setOnClickListener(v -> {
             if (checkSdCardEnabled()) {
                 InstaCameraManager.getInstance().startHDRRecord();
             }
         });
 
+        // Set the button to stop HDR recording
         findViewById(R.id.btn_hdr_record_stop).setOnClickListener(v -> {
             InstaCameraManager.getInstance().stopHDRRecord();
         });
 
+        // Set the button to start timelapse
         findViewById(R.id.btn_timelapse_start).setOnClickListener(v -> {
             if (checkSdCardEnabled()) {
                 InstaCameraManager.getInstance().setTimeLapseInterval(500);
@@ -149,6 +179,7 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
             }
         });
 
+        // Set the button to stop timelapse
         findViewById(R.id.btn_timelapse_stop).setOnClickListener(v -> {
             InstaCameraManager.getInstance().stopTimeLapse();
         });
@@ -158,12 +189,13 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
     }
 
     private void bindViews() {
-        mTvCaptureStatus = findViewById(R.id.tv_capture_status);
-        mTvCaptureTime = findViewById(R.id.tv_capture_time);
-        mTvCaptureCount = findViewById(R.id.tv_capture_count);
-        mBtnPlayCameraFile = findViewById(R.id.btn_play_camera_file);
-        mBtnPlayLocalFile = findViewById(R.id.btn_play_local_file);
-        etCaptureDelayTime = findViewById(R.id.et_capture_delay_timer);
+        mTvCaptureStatus = findViewById(R.id.tv_capture_status);            // show capture status
+        mTvCaptureTime = findViewById(R.id.tv_capture_time);                // show elapsed time during a capture
+        mTvCaptureCount = findViewById(R.id.tv_capture_count);              // show the number of captures made.
+        mBtnPlayCameraFile = findViewById(R.id.btn_play_camera_file);       // play captured files directly from the camera
+        mBtnPlayLocalFile = findViewById(R.id.btn_play_local_file);         // play captured files that have been saved locally on the device
+        etCaptureDelayTime = findViewById(R.id.et_capture_delay_timer);     // allows the user to specify a delay time before capture begins
+
     }
 
     private int getCaptureDelayTime() {
@@ -240,14 +272,17 @@ public class CaptureActivity extends BaseObserveCameraActivity implements ICaptu
         mTvCaptureTime.setVisibility(View.GONE);
         mTvCaptureCount.setVisibility(View.GONE);
         if (filePaths != null && filePaths.length > 0) {
+
             mBtnPlayCameraFile.setVisibility(View.VISIBLE);
             mBtnPlayCameraFile.setOnClickListener(v -> {
                 PlayAndExportActivity.launchActivity(this, filePaths);
             });
+
             mBtnPlayLocalFile.setVisibility(View.VISIBLE);
             mBtnPlayLocalFile.setOnClickListener(v -> {
                 downloadFilesAndPlay(filePaths);
             });
+
         } else {
             mBtnPlayCameraFile.setVisibility(View.GONE);
             mBtnPlayCameraFile.setOnClickListener(null);

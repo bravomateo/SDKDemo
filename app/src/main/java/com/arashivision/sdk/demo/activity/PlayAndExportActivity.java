@@ -326,7 +326,6 @@ public class PlayAndExportActivity extends BaseObserveCameraActivity implements 
         mImagePlayerView.play();
     }
 
-    // 实际项目中导出时建议关闭播放器，否则容易出现oom
     // Recommended to close the player when exporting in the actual project, otherwise it is easy to appear oom
     private void exportVideoOriginal() {
         ExportVideoParamsBuilder builder = new ExportVideoParamsBuilder()

@@ -50,10 +50,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 
-/**
- * 演示连接相机、获取监听SD卡/电量状态、开启预览、录像/拍照/直播整体流程
- * Show the overall process of Camera Connect, Obtain SdCard/Battery status, Open Preview Stream, Record/Capture/Live
- */
+
 public class FullDemoActivity extends AppCompatActivity implements ICameraChangedCallback,
         IPreviewStatusListener, ICaptureStatusListener, ILiveStatusListener {
 
